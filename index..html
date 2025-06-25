@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hello....</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+        
+        body {
+            background-color: #e5ddd5;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .app-container {
+            width: 100%;
+            max-width: 900px;
+            height: 90vh;
+            max-height: 700px;
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+            display: flex;
+        }
+        
+        /* Contacts sidebar */
+        .contacts-sidebar {
+            width: 30%;
+            background-color: #f0f0f0;
+            border-right: 1px solid #ddd;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .sidebar-header {
+            background-color: #f70529;
+            color: white;
+            padding: 12px 16px;
+            font-size: 18px;
+            font-weight: 500;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .user-profile {
+            display: flex;
+            align-items: center;
+        }
+        
+        .user-avatar {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: #efe81a;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            margin-right: 10px;
+            font-size: 12px;
+        }
+        
+        .add-contact {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+        }
+        
+        .search-box {
+            padding: 8px;
+            background-color: white;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 8px 12px;
+            border: none;
+            background-color: #f0f0f0;
+            border-radius: 18px;
+            font-size: 14px;
+            outline: none;
+        }
+        
+        .contact-list {
+            flex: 1;
+            overflow-y: auto;
+        }
+        
+        .contact {
+            padding: 12px;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+        }
+        
+        .contact:hover {
+            background-color: #e9e9e9;
+        }
+        
+        .contact.active {
+            background-color: #d1d1d1;
+        }
+        
+        .contact-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #f4212b;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            margin-right: 12px;
+        }
+        
+        .contact-info {
+            flex: 1;
+        }
+        
+        .contact-name {
+            font-weight: 500;
+            margin-bottom: 2px;
+        }
+        
+        .contact-last-message {
+            font-size: 13px;
+            color: #667781;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 150px;
+        }
+        
+        /* Chat area */
+        .chat-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .chat-header {
+            background-color: #eb69b3;
+            color: white;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .chat-header-back {
+            display: none;
+            margin-right: 12px;
+            cursor: pointer;
+        }
+        
+        .chat-header-info {
+            flex: 1;
+        }
+        
+        .chat-header h2 {
+            font-size: 18px;
+            font-weight: 500;
+        }
+        
+        .chat-header p {
+            font-size: 13px;
+            margin-top: 2px;
+        }
+        
+        .chat-messages {
+            flex: 1;
+            padding: 16px;
+            overflow-y: auto;
+            background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAABmJLR0QA/wD/AP+gvaeTAAAA+UlEQVQ4y+3UMUoDQRTG8Z8psJBUKTyAR7ATvIBgKTYW1p7BI1hY2HkBC0sLwUJQEEFJkY0xO7C7M7OzM4s8JMzOm/f/3rw3b6ZQKBT+kw5mMcQH3jHAGzqYYQH1Pxro4AJvGGGIG9zjFg94xQh3uMQsbXCGZ7zjGXe4xE7K4BQPeMMjLrCbMjjHPd5xi72UwQnu8IZ77KcMjnGLV9xgP2VwhBu84BoHKYMjXOMZVzhMGRzhCk+4xGHK4ABXeMQFjlIG+7jEAy5wlDLYwwXucY7jlMEuznGHM5ykDLZxhtucwXbKYBOnucFJzmALp7nBcc5gA8e5wVHOYB1HucFhzmANR7nBQc5gFQe5wX7OYAX7ucFezmAZe7nBbs5gCbu5wU7OYBE7ucF2zmAB27nBVs5gHpu5wWbOYBYbucFGzmAEM7nBTM5gANO5wXTO4A/TuRExKBQKhX/gG1X1Tp3lz8vEAAAAAElFTkSuQmCC');
+            background-color: #e5ddd5;
+        }
+        
+        .message {
+            max-width: 70%;
+            margin-bottom: 12px;
+            padding: 8px 12px;
+            border-radius: 7.5px;
+            font-size: 15px;
+            line-height: 1.4;
+            word-wrap: break-word;
+            position: relative;
+        }
+        
+        .received {
+            background-color: white;
+            align-self: flex-start;
+            box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+        }
+        
+        .sent {
+            background-color: #dcf8c6;
+            align-self: flex-end;
+            box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+        }
+        
+        .message-time {
+            font-size: 11px;
+            color: #667781;
+            margin-top: 4px;
+            text-align: right;
+        }
+        
+        .message-sender {
+            font-weight: bold;
+            margin-bottom: 2px;
+            color: #f8207a;
+        }
+        
+        .typing-indicator {
+            font-size: 12px;
+            color: #667781;
+            padding: 4px 16px;
+            font-style: italic;
+        }
+        
+        .chat-input {
+            display: flex;
+            padding: 8px;
+            background-color: #f0f0f0;
+            border-top: 1px solid #ddd;
+        }
+        
+        .message-input {
+            flex: 1;
+            padding: 10px 12px;
+            border: none;
+            border-radius: 21px;
+            font-size: 15px;
+            outline: none;
+            margin-right: 8px;
+        }
+        
+        .send-button {
+            background-color: #afcfe4;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 42px;
+            height: 42px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+        }
+        
+        .send-button:active {
+            background-color: #798ca1;
+        }
+        
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+        
+        .modal-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 400px;
+        }
+        
+        .modal h3 {
+            margin-bottom: 16px;
+            color: #075e54;
+        }
+        
+        .modal-input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 16px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+        }
+        
+        .modal-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-left: 8px;
+        }
+        
+        .modal-btn.cancel {
+            background-color: #f0f0f0;
+        }
+        
+        .modal-btn.add {
+            background-color: #075e54;
+            color: white;
+        }
+        
+        .error-message {
+            color: #e74c3c;
+            font-size: 13px;
+            margin-bottom: 12px;
+            display: none;
+        }
+        
+        /* Responsive styles */
+        @media (max-width: 768px) {
+            .app-container {
+                height: 100vh;
+                max-height: 100vh;
+                border-radius: 0;
+            }
+            
+            .contacts-sidebar {
+                width: 100%;
+                display: flex;
+            }
+            
+            .chat-area {
+                display: none;
+                width: 100%;
+            }
+            
+            .chat-area.active {
+                display: flex;
+            }
+            
+            .contacts-sidebar.hidden {
+                display: none;
+            }
+            
+            .chat-header-back {
+                display: block;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Modal for setting username -->
+    <div class="modal" id="username-modal">
+        <div class="modal-content">
+            <h3>Choose Your Username</h3>
+            <p style="margin-bottom: 16px;">This will be your display name in chats</p>
+            <input type="text" class="modal-input" id="username-input" placeholder="Enter username" maxlength="20">
+            <div class="error-message" id="username-error"></div>
+            <div class="modal-actions">
+                <button class="modal-btn add" id="confirm-username">Continue</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for adding contacts -->
+    <div class="modal" id="add-contact-modal">
+        <div class="modal-content">
+            <h3>Add New Contact</h3>
+            <input type="text" class="modal-input" id="contact-name-input" placeholder="Contact username" maxlength="20">
+            <div class="error-message" id="contact-error"></div>
+            <div class="modal-actions">
+                <button class="modal-btn cancel" id="cancel-add-contact">Cancel</button>
+                <button class="modal-btn add" id="confirm-add-contact">Add Contact</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="app-container">
+        <!-- Contacts sidebar -->
+        <div class="contacts-sidebar" id="contacts-sidebar">
+            <div class="sidebar-header">
+                <div class="user-profile">
+                    <div class="user-avatar" id="user-avatar">ME</div>
+                    <span id="username-display">You</span>
+                </div>
+                <button class="add-contact" id="add-contact-btn">+</button>
+            </div>
+            
+            <div class="search-box">
+                <input type="text" class="search-input" placeholder="Search contacts...">
+            </div>
+            
+            <div class="contact-list" id="contact-list">
+                <!-- Contacts will be added here dynamically -->
+                <div class="empty-state" style="padding: 20px; text-align: center; color: #667781;">
+                    No contacts yet. Click + to add someone.
+                </div>
+            </div>
+        </div>
+        
+        <!-- Chat area -->
+        <div class="chat-area" id="chat-area">
+            <div class="chat-header">
+                <div class="chat-header-back" id="chat-back">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="19" y1="12" x2="5" y2="12"></line>
+                        <polyline points="12 19 5 12 12 5"></polyline>
+                    </svg>
+                </div>
+                <div class="chat-header-info" id="chat-header-info">
+                    <h2>Select a contact</h2>
+                    <p>Add someone to start chatting</p>
+                </div>
+            </div>
+            
+            <div class="chat-messages" id="chat-messages">
+                <div class="message received">
+                    Welcome to the chat app! Set your username and add contacts to start chatting.
+                    <div class="message-time">10:30 AM</div>
+                </div>
+            </div>
+            
+            <div class="typing-indicator" id="typing-indicator" style="display: none;">
+                Someone is typing...
+            </div>
+            
+            <div class="chat-input">
+                <input type="text" class="message-input" id="message-input" placeholder="Select a contact to chat" disabled>
+                <button class="send-button" id="send-button" disabled>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="22" y1="2" x2="11" y2="13"></line>
+                        <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // DOM elements
+            const contactsSidebar = document.getElementById('contacts-sidebar');
+            const chatArea = document.getElementById('chat-area');
+            const chatBack = document.getElementById('chat-back');
+            const chatHeaderInfo = document.getElementById('chat-header-info');
+            const chatMessages = document.getElementById('chat-messages');
+            const messageInput = document.getElementById('message-input');
+            const sendButton = document.getElementById('send-button');
+            const typingIndicator = document.getElementById('typing-indicator');
+            const contactList = document.getElementById('contact-list');
+            const addContactBtn = document.getElementById('add-contact-btn');
+            const usernameModal = document.getElementById('username-modal');
+            const usernameInput = document.getElementById('username-input');
+            const usernameError = document.getElementById('username-error');
+            const confirmUsername = document.getElementById('confirm-username');
+            const userAvatar = document.getElementById('user-avatar');
+            const usernameDisplay = document.getElementById('username-display');
+            const addContactModal = document.getElementById('add-contact-modal');
+            const cancelAddContact = document.getElementById('cancel-add-contact');
+            const confirmAddContact = document.getElementById('confirm-add-contact');
+            const contactNameInput = document.getElementById('contact-name-input');
+            const contactError = document.getElementById('contact-error');
+            
+            // Chat state
+            let currentContact = null;
+            let contacts = {};
+            let nextContactId = 1;
+            let isTyping = false;
+            let typingTimeout;
+            let currentUsername = '';
+            
+            // Initialize the app
+            function initApp() {
+                // Load username from localStorage or show modal
+                currentUsername = localStorage.getItem('chat-username');
+                
+                if (!currentUsername) {
+                    showUsernameModal();
+                } else {
+                    updateUserDisplay();
+                    loadContacts();
+                }
+                
+                // Load contacts from localStorage
+                const savedContacts = localStorage.getItem('chat-contacts');
+                if (savedContacts) {
+                    contacts = JSON.parse(savedContacts);
+                    nextContactId = Math.max(...Object.keys(contacts).map(Number), 0) + 1;
+                    renderContacts();
+                }
+            }
+            
+            // Show username modal
+            function showUsernameModal() {
+                usernameModal.style.display = 'flex';
+                usernameInput.focus();
+            }
+            
+            // Hide username modal
+            function hideUsernameModal() {
+                usernameModal.style.display = 'none';
+            }
+            
+            // Show add contact modal
+            function showAddContactModal() {
+                contactNameInput.value = '';
+                contactError.style.display = 'none';
+                addContactModal.style.display = 'flex';
+                contactNameInput.focus();
+            }
+            
+            // Hide add contact modal
+            function hideAddContactModal() {
+                addContactModal.style.display = 'none';
+            }
+            
+            // Update user display in header
